@@ -1,0 +1,9 @@
+version=1
+
+debounce="200ms"
+
+[patterns]
+"*.go"={cmd = "echo toplevel"}
+"*/*.go"={cmd = "echo sublevel"}
+"**/*.go"={cmd = "echo any depth", debounce="1s"}
+"go.sum"={cmd="echo gosum:::"}
