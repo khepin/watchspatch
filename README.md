@@ -24,7 +24,7 @@ debounce="200ms"
 [patterns]
 "*.go"={cmd = "echo toplevel"}
 "*/*.js"={cmd = "echo sublevel"}
-# Some commands will benefit from a custom debounce value (slow one in general are a good fit here)
+# Some commands will benefit from a custom debounce value (slow ones in general are a good fit here)
 "**/*.php"={cmd = "echo any depth", debounce="1s"}
 "go.sum"={cmd="echo gosum:::"}
 ```
