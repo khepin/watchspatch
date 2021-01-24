@@ -1,6 +1,7 @@
 package main
 
 import (
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -8,6 +9,7 @@ import (
 	"time"
 
 	"github.com/fsnotify/fsevents"
+	"github.com/markbates/pkger"
 	"github.com/mb0/glob"
 	"github.com/pelletier/go-toml"
 	"github.com/sirupsen/logrus"
@@ -146,10 +148,20 @@ type Config struct {
 	Debounce time.Duration
 }
 
-func (c *Config) Reload() {
-	cfg, _ := toml.LoadFile(configFile)
+func (c *Config) Reload() error {
+	cfg, err := toml.LoadFile(configFile)
+	if err != nil {
+		// no config found. Create sample config
+		if os.IsNotExist(err) {
+			f, _ := pkger.Open("/assets/sample.watchspatch.toml")
+			b, _ := ioutil.ReadAll(f)
+			ioutil.WriteFile(configFile, b, 0644)
+			logrus.Fatal("no config file was found. sample config file created")
+		}
+	}
 	cfg.Unmarshal(c)
 	c.Prepare()
+	return nil
 }
 
 func (c *Config) Prepare() {
